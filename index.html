@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable</title>
+    <link 
+    rel="stylesheet"
+    href="./style.css"/>
+    
+</head>
+<body>
+    <div class="container">
+
+<h2 id="status" style="text-align:center;color:blue;"></h2>
+<div class="room"><b>ROOM NO :- E-224</b></div>
+    <table>
+        <tr>
+            <th>Day</th>
+            <th>8Am to 9Am</th>
+            <th>9Am to 10Am</th>
+            <th>10Am to 11Am</th>
+            <th>11Am to 12Pm</th>
+            <th>12Pm to 1Pm</th>
+            <th>1Pm to 2Pm</th>
+            <th>2Pm to 3Pm</th>
+            <th>3Pm to 4Pm</th>
+            <th>4Pm to 5Pm</th>
+            <th>5Pm to 6Pm</th>
+        </tr>
+        <tr id="Mon">
+            <td>Monday</td>
+            <td>MACRO<br>(E-224)</td>
+            <td></td>
+            <td></td>
+            <td>AAD-2<br>(E-224)</td>
+            <td></td>
+            <td>COA<br>(E-224)</td>
+            <td>ALA<br>(E-231)</td>
+            <td></td>
+            <td>IDM<br>(E-224)</td>
+            <td>CSW-2<br>(E-224)</td>
+        </tr>
+        <tr id="Tue">
+            <td>Tuesday</td>
+            <td>CSW-2<br>(E-224)</td>
+            <td>MACRO<br>(E-224)</td>
+            <td></td>
+            <td></td>
+            <td>AAD-2<br>(E-224)</td>
+            <td></td>
+            <td>COA<br>(E-224)</td>
+            <td>ALA<br>(E-231)</td>
+            <td></td>
+            <td>IDM<br>(E-224)</td>
+        </tr>
+        <tr id="Wed">
+            <td>Wednesday</td>
+            <td>IDM<br>(E-224)</td>
+            <td>CSW-2<br>(E-224)</td>
+            <td>MACRO<br>(E-224)</td>
+            <td></td>
+            <td></td>
+            <td>AAD-2<br>(E-224)</td>
+            <td></td>
+            <td>COA<br>(E-224)</td>
+            <td>ALA<br>(E-231)</td>
+            <td></td>
+        </tr>
+        <tr id="Thu">
+            <td>Thrusday</td>
+            <td></td>
+            <td>IDM<br>(E-224)</td>
+            <td>Csw-2<br>(E-224)</td>
+            <td>MACRO<br>(E-224)</td>
+            <td></td>
+            <td></td>
+            <td>AAD-2<br>(E-224)</td>
+            <td></td>
+            <td>COA<br>(E-224)</td>
+            <td>ALA<br>(E-231)</td>
+        </tr>
+        <tr id="Fri">
+            <td>Friday</td>
+            <td>ALA<br>(E-231)</td>
+            <td></td>
+            <td>IDM<br>(E-224)</td>
+            <td>CSW-2<br>(E-224)</td>
+            <td>MACRO<br>(E-224)</td>
+            <td></td>
+            <td></td>
+            <td>AAD-2<br>(E-224)</td>
+            <td></td>
+            <td>COA<br>(E-224)</td>
+        </tr>
+        <tr id="Sat">
+            <td>Saturday</td>
+            <td>COA<br>(E-224)</td>
+            <td>ALA<br>(E-231)</td>
+            <td></td>
+            <td>IDM<br>(E-224)</td>
+            <td>CSW-2<br>(E-224)</td>
+            <td>MACRO<br>(E-224)</td>
+            <td></td>
+            <td></td>
+            <td>AAD-2<br>(E-224)</td>
+            <td></td>
+        </tr>
+        
+    </table>
+    <div class="subjects">
+
+<div>
+<span>Algorithms Analysis and Design 2 (AAD2)</span>
+<span>Sneha Choudhury & Arup Dutta</span>
+</div>
+
+<div>
+<span>Computer Science Workshop 2 (CSW2)</span>
+<span>Subhashish Nayak & Indrajit Mazumdar</span>
+</div>
+
+
+<div>
+<span>Computer Organisation and Architecture (COA)</span>
+<span>Ipsita Dash & Anisha Samanta</span>
+</div>
+
+<div>
+<span>Introduction to Macroeconomics-1 (MACRO-1)</span>
+<span>Anjan Kumar Sahu</span>
+</div>
+
+
+<div>
+<span>Applied Linear Algebra(ALA)</span>
+<span>Bibhakar Kodmsingh</span>
+</div>
+
+<div>
+<span>Introduction to Disaster Management-3 (IDM-3)</span>
+<span>Sulochana Singh</span>
+</div>
+
+</div>
+
+</div>
+<script>
+
+const days=["SUN","MON","TUE","WED","THU","FRI","SAT"];
+
+const periods=[
+"08:00","09:00","10:00","11:00","12:00",
+"13:00","14:00","15:00","16:00","17:00","18:00"
+];
+
+function updateTimetable(){
+
+    // Remove previous highlights
+    document.querySelectorAll("tr").forEach(r=>r.classList.remove("today"));
+    document.querySelectorAll("td").forEach(c=>c.classList.remove("current"));
+
+    const now=new Date();
+
+    const day=days[now.getDay()];
+
+    if(day==="SUN"){
+        document.getElementById("status").innerHTML="sunday 🎉";
+        return;
+    }
+
+    const row=document.getElementById(day);
+
+    row.classList.add("today");
+
+    const current=now.getHours()*60+now.getMinutes();
+
+    let period=-1;
+
+    for(let i=0;i<periods.length-1;i++){
+
+        let start=periods[i].split(":");
+        let end=periods[i+1].split(":");
+
+        let s=parseInt(start[0])*60+parseInt(start[1]);
+        let e=parseInt(end[0])*60+parseInt(end[1]);
+
+        if(current>=s && current<e){
+            period=i+1;
+            break;
+        }
+
+    }
+
+    if(period!=-1){
+
+        row.cells[period].classList.add("current");
+
+        let subject=row.cells[period].innerText;
+
+        let next=(period<10)?row.cells[period+1].innerText:"No More Classes";
+
+        document.getElementById("status").innerHTML=
+        "📖 Current Subject : <b>"+subject+
+        "</b> | ⏭ Next : <b>"+next+"</b>";
+
+    }else{
+
+        document.getElementById("status").innerHTML="No class at this time.";
+
+    }
+
+}
+
+updateTimetable();
+
+setInterval(updateTimetable,60000);
+
+</script>
+</body>
+</html>
