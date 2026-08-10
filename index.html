@@ -11,9 +11,15 @@
 </head>
 <body>
     <div class="container">
-
+<button onclick="toggleMode()">🌙 Dark Mode</button>
+<header>
+<h1>📚 Smart College Timetable</h1>
+<p>Live Class Monitoring System</p>
+</header>
+<h2 id="clock"></h2>
 <h2 id="status" style="text-align:center;color:blue;"></h2>
-<div class="room"><b>ROOM NO :- E-224</b></div>
+
+<h2 id="countdown"></h2>
 <div class="table-wrapper">
     <table>
         <tr>
@@ -69,7 +75,7 @@
             <td></td>
         </tr>
         <tr id="Thu">
-            <td>Thrusday</td>
+            <td>Thursday</td>
             <td></td>
             <td>IDM<br>(E-224)</td>
             <td>Csw-2<br>(E-224)</td>
@@ -125,7 +131,7 @@
 
 <div>
 <span>Computer Organisation and Architecture (COA)</span>
-<span>Ipsita Dash & Anisha Samanta</span>
+<span> Anisha Samanta</span>
 </div>
 
 <div>
@@ -166,10 +172,12 @@ function updateTimetable(){
 
     const day=days[now.getDay()];
 
-    if(day==="SUN"){
+    if(day==="Sun"){
         document.getElementById("status").innerHTML="sunday 🎉";
         return;
+        
     }
+    
 
     const row=document.getElementById(day);
 
@@ -194,29 +202,83 @@ function updateTimetable(){
 
     }
 
-    if(period!=-1){
+    if (period== -1){
+        if(current < 8*60){
+            document.getElementById("status").innerHTML = "🌅 Classes haven't started yet.";
 
-        row.cells[period].classList.add("current");
+        }else{
+            document.getElementById("status").innerHTML="🏠 No more classes today.";
+        }
+        document.getElementById("countdown").innerHTML="";
 
-        let subject=row.cells[period].innerText;
-
-        let next=(period<10)?row.cells[period+1].innerText:"No More Classes";
-
-        document.getElementById("status").innerHTML=
-        "📖 Current Subject : <b>"+subject+
-        "</b> | ⏭ Next : <b>"+next+"</b>";
-
-    }else{
-
-        document.getElementById("status").innerHTML="No class at this time.";
-
+        return;
+    }
+    row.cells[period].classList.add("current");
+    let subject =row.cells[period].innerText.trim();
+    let next = "No More Classes";
+    for(let i = period + 1; i < row.cells.length; i++){
+        let nextSubject= row.cells[i].innerText.trim();
+        if(nextSubject !== ""){
+            next=nextSubject;
+            break;
+        }
     }
 
+    if(subject == ""){
+        document.getElementById("status").innerHTML = "📚 No class at this time." + " | ⏭ Next : <b>" + next + "</b>";
+
+    }else{
+        document.getElementById("status").innerHTML = "📖 Current Subject : <b>" + subject + "</b> | ⏭ Next : <b>" + next + "</b>";
+    }
+
+
+    let end = periods[period].split(":");
+    
+    let endTime = new Date(now);
+    
+    endTime.setHours(parseInt(end[0]),parseInt(end[1]),0,0);
+    
+    let remainingSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
+    
+    let m = Math.floor(remainingSeconds / 60);
+    
+    let s = remainingSeconds % 60;
+    
+    document.getElementById("countdown").innerHTML = "⏳ " + m + " Minute(s) " + s.toString().padStart(2, "0") +" Second(s) Remaining";
 }
 
 updateTimetable();
 
-setInterval(updateTimetable,60000);
+setInterval(updateTimetable,1000);
+
+// Clock
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("clock").innerHTML =
+        "📅 " +
+        now.toDateString() +
+        " | ⏰ " +
+        now.toLocaleTimeString();
+}
+
+function toggleMode(){
+    document.body.classList.toggle("dark");
+}
+
+
+
+//Notfication 
+if(Notification.permission==="granted"){
+    new Notification("Class Started!",{
+        body:"Time for "+subject
+    });
+}
+Notification.requestPermission();
+// Run clock immediately
+updateClock();
+
 
 </script>
 </body>
